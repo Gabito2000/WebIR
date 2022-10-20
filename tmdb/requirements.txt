@@ -1,0 +1,17 @@
+astroid
+backports.functools-lru-cache
+certifi
+chardet
+configparser
+enum34
+futures
+idna
+isort
+lazy-object-proxy
+mccabe
+pylint
+requests
+singledispatch
+six
+urllib3
+wrapt
