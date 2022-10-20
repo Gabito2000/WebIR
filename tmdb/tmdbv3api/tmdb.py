@@ -9,6 +9,7 @@ import requests.exceptions
 
 from .as_obj import AsObj
 from .exceptions import TMDbException
+from decouple import config
 
 try:
     from functools import lru_cache
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class TMDb(object):
-    TMDB_API_KEY = "TMDB_API_KEY"
+    TMDB_API_KEY = config('TMDB_API_KEY')
     TMDB_LANGUAGE = "TMDB_LANGUAGE"
     TMDB_WAIT_ON_RATE_LIMIT = "TMDB_WAIT_ON_RATE_LIMIT"
     TMDB_DEBUG_ENABLED = "TMDB_DEBUG_ENABLED"
