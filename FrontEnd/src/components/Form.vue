@@ -108,7 +108,14 @@ export default {
       })
     },
     search(){
-      console.log([{genre:this.genre}, {type: this.type}, {name: this.name}, {date: this.date}] )
+      // get elements form the store
+      let favorites = window.localStorage.movies ? window.localStorage.movies.split(',') : []
+      let streamingServices = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
+      let selectedRegion = window.localStorage.region ? window.localStorage.region : "";
+      let selectedLanguage = window.localStorage.language ? window.localStorage.language : "";
+      
+      console.log([{genre:this.genre}, {type: this.type}, {name: this.name}, {date: this.date},{favorites:favorites},
+       {streamingServices: streamingServices}, {selectedRegion: selectedRegion}, {selectedLanguage: selectedLanguage} ] )
     }
   },
   beforeMount(){

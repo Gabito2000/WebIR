@@ -73,6 +73,7 @@ export default {
       /* iso 3166-1 */
       /* latam, europe and usa */
       regionOptions: [
+        { value: "", label: "Todas" },
         { value: "UR", label: "Uruguay" },
         { value: "AR", label: "Argentina" },
         { value: "BR", label: "Brasil" },
@@ -86,7 +87,7 @@ export default {
         { value: "GB", label: "Reino Unido" },
         { value: "US", label: "Estados Unidos" },
       ],
-      selectedRegion: "UR",
+      selectedRegion: "",
       languageOptions: [
         { value: "es", label: "Español" },
         { value: "en", label: "English" },
