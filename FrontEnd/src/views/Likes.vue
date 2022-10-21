@@ -44,7 +44,7 @@ export default {
 
       for (let i = 0; i <= moviesId.length; i++) {
         axios.get(
-          `https://api.themoviedb.org/3/movie/${moviesId[i]}?api_key=f9a3efe8c813e81a40a9b661bde37457&language=fr-FR`
+          `https://api.themoviedb.org/3/movie/${moviesId[i]}?api_key=f9a3efe8c813e81a40a9b661bde37457&language=es-ES`
         )
         .then((result) => this.movies.push(result.data))
       }
