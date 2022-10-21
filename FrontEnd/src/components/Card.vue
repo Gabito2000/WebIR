@@ -3,7 +3,7 @@
     <img v-if="movie.poster_path" :src="'https://image.tmdb.org/t/p/w500/'+movie.poster_path"/>
     <img v-else src="/img/poster.jpg"/>
 
-    <h2>{{movie.title}}</h2>
+    <h3>{{movie.title}}</h3>
 
     <h5 v-if="movie.release_date">{{dateFormat(movie.release_date)}}</h5>
     <h5 v-else >Fecha no encontrada</h5>

@@ -10,11 +10,20 @@ import router from './router'
 import { CIcon } from '@coreui/icons-vue';
 
 import {
-    cilOptions
+
+    cibNetflix,
+    cibAmazon,
+    cibCrunchyroll,
+    cibYoutube
+    
 } from '@coreui/icons'
 
 const icons = {
-    cilOptions
+    cibNetflix,
+    cibAmazon,
+    cibCrunchyroll,
+    cibYoutube
+    
 }
 
 const app = createApp(App)

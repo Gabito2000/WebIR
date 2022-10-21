@@ -3,7 +3,7 @@
     <Header />
     <h2>Tus Favoritos</h2>
     <div className="result">
-      <div v-if="movies.length > 0" class="card" v-for="movie in movies" :key="movie.id"> 
+      <div v-if="movies.length > 0" class="cardMovie" v-for="movie in movies" :key="movie.id"> 
        <Card :movie="movie" :add="false" :setDataFromChild="setDataFromChild"/>
       </div>
       <div v-else>
