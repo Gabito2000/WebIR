@@ -24,18 +24,22 @@
     <h3 v-if="movie.overview">Synopsis</h3>
     <p>{{movie.overview}}</p>
 
-    <div v-if="add" @Click="addStorage(movie)" class="btn">Añadir a favoritos</div>
-    <div v-else @Click="removeStorage(movie)" class="btn">Remover de favoritos</div>
+    <CButton v-if="!isFavorite" class="btn-normal" @Click="changeStorage(movie)" >Añadir a favoritos</CButton>
+    <CButton v-if="isFavorite" class="btn-success" @Click="changeStorage(movie)" >Quitar de favoritos</CButton>
 </template>
 
 <script>
 import poster from '/img/poster.jpg'
-
+import { CButton } from '@coreui/vue';
 export default {
   data(){
     return {
-      poster: poster,
+      poster: poster, 
+      isFavorite: false
     }
+  },
+  components: {
+    CButton
   },
   props: {
     movie: Object,
@@ -59,24 +63,20 @@ export default {
       }
       return genresArray;
     },
-    addStorage(movie){
+    changeStorage(movie) {
       let storeData = window.localStorage.movies ? window.localStorage.movies.split(',') : [];
-      if (!storeData.includes(movie.id.toString())) {
-        storeData.push(movie.id)
-        window.localStorage.movies = storeData
+      if (storeData.includes(movie.id.toString())) {
+        storeData = storeData.filter(id => id !== movie.id.toString());
+      } else {
+        storeData.push(movie.id.toString());
       }
-    },
-    removeStorage(movie) {
-      let storeData = window.localStorage.movies.split(',');
-
-      let indexMovie = storeData.indexOf(movie.id.toString());
-      if(indexMovie != -1){
-        let movie = this.movie
-        storeData.splice(indexMovie, 1);
-        this.setDataFromChild(movie.id)
-        window.localStorage.movies = storeData;
-      }
+      window.localStorage.movies = storeData;
+      this.isFavorite = !this.isFavorite;
     }
   },
+  mounted() {
+    let storeData = window.localStorage.movies ? window.localStorage.movies.split(',') : [];
+    this.isFavorite = storeData.includes(this.movie.id.toString());
+  }
 }
 </script>

@@ -86,7 +86,6 @@
     }
   }
   .btn {
-    background: #546fe4;
     position: absolute;
     bottom: 16px;
     left: 50%;
@@ -99,6 +98,21 @@
     transition: 0.2s;
     z-index: 50;
     user-select: none;
+  }
+  .btn-success {
+
+    &:hover {
+      background: #198754;
+      box-shadow: 0 0 10px #198754;
+      font-size: 1.025rem;
+    }
+    &:active {
+      transform: scale(1.05) translateX(-50%);
+      color: $black;
+    }
+  }
+  .btn-normal {
+    background: #546fe4;
 
     &:hover {
       background: #212040;
