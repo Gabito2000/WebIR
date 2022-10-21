@@ -1,5 +1,5 @@
 <template lang="">
-    <div className='header'>
+    <div className='headerApp'>
       <nav>
         <ul>
           <RouterLink to="/" active-class="nav-active">
