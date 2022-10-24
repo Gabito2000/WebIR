@@ -1,0 +1,6 @@
+./jaws.png
+./la_cienaga.png
+./endgame.png
+./pulp_fiction_full.png
+./pulp_fiction.png
+./licorice_pizza.png
