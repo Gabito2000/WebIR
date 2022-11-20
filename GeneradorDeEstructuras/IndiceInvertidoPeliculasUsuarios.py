@@ -19,9 +19,10 @@ c = conn.cursor()
 c.execute('SELECT * FROM UsuariosPeliculas')
 usuariosPeliculas = c.fetchall()
 
-# creates the table for the inverted index idPelicula, list of idUsuarios
+# creates the table for the inverted index idPelicula, list of idUsuarios idPelicula is a foreing key to Peliculas
 c.execute('DROP TABLE IF EXISTS IndiceInvertidoPeliculasUsuarios')
-c.execute('CREATE TABLE IndiceInvertidoPeliculasUsuarios (idPelicula INTEGER PRIMARY KEY, idUsuarios TEXT)')
+c.execute('CREATE TABLE IndiceInvertidoPeliculasUsuarios (idPelicula integer primary key, idUsuarios text) FOREIGN KEY(idPelicula) REFERENCES Peliculas(idPelicula)')
+#c.execute('CREATE TABLE IndiceInvertidoPeliculasUsuarios (idPelicula INTEGER PRIMARY KEY, idUsuarios TEXT)')
 conn.commit()
 
 # adds the data to the table

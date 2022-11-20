@@ -19,9 +19,9 @@ c = conn.cursor()
 c.execute('SELECT * FROM DistribuidoresPeliculas')
 distribuidoresPeliculas = c.fetchall()
 
-# create the table
+# create the table idPelicula is foreign key to Peliculas
 c.execute('DROP TABLE IF EXISTS DistribuidoresPeliculasIndiceInvertido')
-c.execute('CREATE TABLE DistribuidoresPeliculasIndiceInvertido (idPelicula INTEGER PRIMARY KEY, distribuidores TEXT)')
+c.execute('CREATE TABLE DistribuidoresPeliculasIndiceInvertido (idPelicula INTEGER PRIMARY KEY, distribuidores TEXT) FOREIGN KEY(idPelicula) REFERENCES Peliculas(idPelicula)')
 conn.commit()
 
 
