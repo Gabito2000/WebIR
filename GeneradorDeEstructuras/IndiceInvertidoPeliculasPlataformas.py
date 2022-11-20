@@ -12,7 +12,7 @@ import sqlite3
 import sys
 
 # connect to the database
-conn = sqlite3.connect('Peliculas.db')
+conn = sqlite3.connect('/dataBase/Peliculas.db')
 c = conn.cursor()
 
 # get DistribuidoresPeliculas
@@ -43,7 +43,7 @@ conn.close()
 
 def getDistribuidoresPeliculas(idPelicula):
     # connect to the database
-    conn = sqlite3.connect('Peliculas.db')
+    conn = sqlite3.connect('/dataBase/Peliculas.db')
     c = conn.cursor()
 
     # get the distribuidores

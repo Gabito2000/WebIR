@@ -12,7 +12,7 @@ import sqlite3
 import sys
 
 # connect to the database
-conn = sqlite3.connect('Peliculas.db')
+conn = sqlite3.connect('./dataBase/Peliculas.db')
 c = conn.cursor()
 
 # get all perliculas valued by a user in usuarios peliculas 
