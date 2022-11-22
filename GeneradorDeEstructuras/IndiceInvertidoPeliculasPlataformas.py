@@ -32,14 +32,17 @@ for distribuidorPelicula in distribuidoresPeliculas:
     # get the idPelicula
     tituloPelicula = distribuidorPelicula[1]
     # get the idPelicula
-    c.execute('SELECT idPelicula FROM Peliculas WHERE titulo = ?', (tituloPelicula,))
-    idPelicula = c.fetchone()[0]    
+    c.execute('SELECT idPelicula FROM Peliculas WHERE titulo = ?',
+              (tituloPelicula,))
+    idPelicula = c.fetchone()[0]
     # add the distribuidor
-    c.execute('INSERT INTO DistribuidoresPeliculasIndiceInvertido VALUES (?, ?)', (idPelicula, idDistribuidor))
+    c.execute('INSERT INTO DistribuidoresPeliculasIndiceInvertido VALUES (?, ?)',
+              (idPelicula, idDistribuidor))
     conn.commit()
 
 # close the connection
 conn.close()
+
 
 def getDistribuidoresPeliculas(idPelicula):
     # connect to the database
@@ -52,4 +55,3 @@ def getDistribuidoresPeliculas(idPelicula):
 
     # close the connection
     conn.close()
-

@@ -10,6 +10,7 @@
 
 import sqlite3
 import sys
+import pandas as pd
 
 # connect to the database
 conn = sqlite3.connect('/dataBase/Peliculas.db')
@@ -29,20 +30,24 @@ conn.commit()
 for usuarioPelicula in usuariosPeliculas:
     idUsuario = usuarioPelicula[0]
     idPelicula = usuarioPelicula[1]
-    c.execute('SELECT * FROM IndiceInvertidoPeliculasUsuarios WHERE idPelicula = ?', (idPelicula,))
+    c.execute(
+        'SELECT * FROM IndiceInvertidoPeliculasUsuarios WHERE idPelicula = ?', (idPelicula,))
     indiceInvertidoPeliculasUsuarios = c.fetchone()
     if indiceInvertidoPeliculasUsuarios is None:
-        c.execute('INSERT INTO IndiceInvertidoPeliculasUsuarios VALUES (?, ?)', (idPelicula, str(idUsuario)))
+        c.execute('INSERT INTO IndiceInvertidoPeliculasUsuarios VALUES (?, ?)',
+                  (idPelicula, str(idUsuario)))
     else:
         idUsuarios = indiceInvertidoPeliculasUsuarios[1]
         idUsuarios = idUsuarios + ',' + str(idUsuario)
-        c.execute('UPDATE IndiceInvertidoPeliculasUsuarios SET idUsuarios = ? WHERE idPelicula = ?', (idUsuarios, idPelicula))
+        c.execute('UPDATE IndiceInvertidoPeliculasUsuarios SET idUsuarios = ? WHERE idPelicula = ?',
+                  (idUsuarios, idPelicula))
     conn.commit()
 
 
 # get the usuario FROM a pelicula in usuarios peliculas
 def getUsuarioFromPelicula(idPelicula):
-    c.execute('SELECT * FROM IndiceInvertidoPeliculasUsuarios WHERE idPelicula = ?', (idPelicula,))
+    c.execute(
+        'SELECT * FROM IndiceInvertidoPeliculasUsuarios WHERE idPelicula = ?', (idPelicula,))
     indiceInvertidoPeliculasUsuarios = c.fetchone()
     if indiceInvertidoPeliculasUsuarios is None:
         return None
@@ -52,7 +57,18 @@ def getUsuarioFromPelicula(idPelicula):
         return idUsuarios
 
 
+# conn = sqlite3.connect('/dataBase/Peliculas.db')
+# ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
+# movies = pd.read_sql_query("SELECT * from Peliculas", conn)
 
 
+# def get_rating_(userid, movieid):
+#     return (ratings.loc[(ratings.idUsuario == userid) & (ratings.idPelicula == movieid), 'calification'].iloc[0])
 
 
+# def get_movieids_(userid):
+#     return (ratings.loc[(ratings.idUsuario == userid), 'idPelicula'].tolist())
+
+
+# def get_movie_title_(movieid):
+#     return (movies.loc[(movies.id == movieid), 'title'].iloc[0])
