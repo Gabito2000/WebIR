@@ -77,4 +77,4 @@ def get_movie_title_(movieid):
 
 
 def get_movie_distributors_(movieid):
-    return (distributors.loc[(distributors.title == movieid), 'distributors'].tolist())
+    return (distributors.loc[(distributors.title == movieid), 'distributors'].tolist()[0].split(','))

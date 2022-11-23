@@ -79,13 +79,25 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     return similarity_score[:number_of_users]
 
 
-# similar = most_similar_users_(1, 15)
-# users = []
+similar = most_similar_users_(1, 15)
+users = []
 
-# for (similarity, user) in similar:
-#     users.append(user)
+for (similarity, user) in similar:
+    users.append(user)
 
-# print(similar)
-# print(users)
+user1_streaming_services = ['2']
 
-print(get_movie_distributors_(1))
+
+def recommend_movies(user, users, streaming_services, max):
+    viewedMoviesUser = get_movieids_(user)
+    notViewedMovies = []
+    for u in users:
+        movies = get_movieids_(u)
+        for m in movies:
+            if m not in viewedMoviesUser and m not in notViewedMovies and any(item in get_movie_distributors_(get_movie_title_(m)) for item in streaming_services):
+                notViewedMovies.append(m)
+    notViewedMovies.sort()
+    return notViewedMovies[:max]
+
+
+print(recommend_movies(1, users, user1_streaming_services, 10))
