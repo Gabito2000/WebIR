@@ -61,6 +61,7 @@ conn = sqlite3.connect(
     '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
 ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
 movies = pd.read_sql_query("SELECT * from Peliculas", conn)
+distributors = pd.read_sql_query("SELECT * from PeliculasDistibuidores", conn)
 
 
 def get_rating_(userid, movieid):
@@ -73,3 +74,7 @@ def get_movieids_(userid):
 
 def get_movie_title_(movieid):
     return (movies.loc[(movies.id == movieid), 'title'].iloc[0])
+
+
+def get_movie_distributors_(movieid):
+    return (distributors.loc[(distributors.title == movieid), 'distributors'].tolist())

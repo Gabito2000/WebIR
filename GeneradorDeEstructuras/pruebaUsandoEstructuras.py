@@ -79,4 +79,13 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     return similarity_score[:number_of_users]
 
 
-print(most_similar_users_(1, 10))
+# similar = most_similar_users_(1, 15)
+# users = []
+
+# for (similarity, user) in similar:
+#     users.append(user)
+
+# print(similar)
+# print(users)
+
+print(get_movie_distributors_(1))
