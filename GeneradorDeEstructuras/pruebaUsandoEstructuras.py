@@ -77,3 +77,6 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     similarity_score.reverse()
 
     return similarity_score[:number_of_users]
+
+
+print(most_similar_users_(1, 10))
