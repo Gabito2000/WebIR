@@ -1703,7 +1703,6 @@ Id;title;Distributor;type
 1702;The Third Party;2;MOVIE
 1703;Ojukokoro (Greed);2;MOVIE
 1704;Lakeeran;2;MOVIE
-1705;;2;MOVIE
 1706;Time Out;2;MOVIE
 1707;Derry Girls;2;SHOW
 1708;The Sinner;2;SHOW
@@ -13404,7 +13403,7 @@ Id;title;Distributor;type
 13403;Bob and The Monster;1;MOVIE
 13404;Believe: The Eddie Izzard Story;1;MOVIE
 13405;Anatomy of a Love Seen;1;MOVIE
-13406;#Home (4K UHD);1;MOVIE
+13406;#Home;1;MOVIE
 13407;#Home;1;MOVIE
 13408;The Secret of Crickley Hall;1;SHOW
 13409;The Midwife;1;MOVIE
