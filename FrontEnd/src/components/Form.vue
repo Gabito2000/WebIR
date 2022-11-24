@@ -77,29 +77,13 @@ export default {
     return {
       movies:[],
       genres:[],
+      genre:0,
+      type:0,
+      name:'',
+      date:'',
     }
   },
   methods: {
-    getMovies() {
-      let stars = window.localStorage.movies ? window.localStorage.movies.split(',').map( element => {
-        return {
-          id: element.split(':')[0],
-          stars: element.split(':')[1]
-        }
-      }) : []
-      let streamingServices = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
-
-      //our server runs on localhost:8080.
-      //send the scores and the striming services to the server with a POST request
-      axios.post('http://localhost:8080/movies', {
-        stars: stars,
-        streamingServices: streamingServices
-      })
-
-      axios.get(
-        `https://api.themoviedb.org/3/genre/movie/list?api_key=f9a3efe8c813e81a40a9b661bde37457&language=es-ES`
-      ).then(result => this.genres = result.data.genres)
-    },
     setSortGoodBad(e) {
       this.movies.sort((a, b) => {
         if (e.target.id === 'goodToBad') {
@@ -111,7 +95,11 @@ export default {
         }
       })
     },
-    async search(){
+    search(){
+      axios.get(
+        `https://api.themoviedb.org/3/genre/movie/list?api_key=f9a3efe8c813e81a40a9b661bde37457&language=es-ES`
+      ).then(result => this.genres = result.data.genres)
+      .catch(error => console.log(error));
       // get elements form the store
       let stars = window.localStorage.movies ? window.localStorage.movies.split(',').map( element => {
         return {
@@ -121,38 +109,36 @@ export default {
       }) : []
 
       let streamingServices = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
-
-      moviesID = await axios.post('http://localhost:8080/movies', {
-        stars: stars,
-        streamingServices: streamingServices
-      })
-      if(moviesID.length == 0){
-        //do a get request to the API
-        axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457
-          &language=${selectedLanguage}
-          &region=${selectedRegion}`
-        ).then(result => this.movies = result.data.results)
-        return 0;
-      }
-        
       let selectedRegion = window.localStorage.region ? window.localStorage.region : "";
       let selectedLanguage = window.localStorage.language ? window.localStorage.language : "";
 
-      //now search the movies on imdb by id and adds it to the movies
-      moviesID.map(movieID =>{
-        axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457
-        &language=${selectedLanguage}
-        &region=${selectedRegion}
-        &query=${movieID}
-        `
-        ).then(result => this.movies.push(result.data))
-      })
+      axios.post('http://localhost:8080/movies', {
+        stars: stars,
+        streamingServices: streamingServices
+      }).then( response => {
+          this.movies = response.data;
+          //now search the movies on imdb by id and adds it to the movies
+          moviesID.map(movieID =>{
+            axios.get(
+            `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457
+            &language=${selectedLanguage}
+            &region=${selectedRegion}
+            &query=${movieID}
+            `
+            ).then(result => this.movies.push(result.data)).catch(error => console.log(error))
+          })
+        }).catch(error => {
+          //si falla trae todos los movies
+          console.log({error:error});
+          axios.get(
+            `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query=marvel&language=es-ES&include_adult=true`
+          ).then(result => this.movies = result.data.results );
+        })
+      
     }
   },
   beforeMount(){
-    this.getMovies()
+    this.search()
   }
 }
 </script>
