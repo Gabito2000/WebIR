@@ -77,20 +77,24 @@ export default {
     return {
       movies:[],
       genres:[],
-      genre:0,
-      type:0,
-      name:'marvel',
-      date:''
     }
   },
   methods: {
     getMovies() {
-      //TODO CAMBIAR CONSULTA A API NUESTRA 
-      // axios.get(`https:Nuestra Appi &movies=${this.movies}&genres=${this.genres}&type=${this.type}&name=${this.name}&date=${this.date}`
-      // ).then(result => this.movies = result.data.results );
-      axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query=${this.name}&language=es-ES&include_adult=true`
-      ).then(result => this.movies = result.data.results );
+      let stars = window.localStorage.movies ? window.localStorage.movies.split(',').map( element => {
+        return {
+          id: element.split(':')[0],
+          stars: element.split(':')[1]
+        }
+      }) : []
+      let streamingServices = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
+
+      //our server runs on localhost:8080.
+      //send the scores and the striming services to the server with a POST request
+      axios.post('http://localhost:8080/movies', {
+        stars: stars,
+        streamingServices: streamingServices
+      })
 
       axios.get(
         `https://api.themoviedb.org/3/genre/movie/list?api_key=f9a3efe8c813e81a40a9b661bde37457&language=es-ES`
@@ -107,15 +111,44 @@ export default {
         }
       })
     },
-    search(){
+    async search(){
       // get elements form the store
-      let favorites = window.localStorage.movies ? window.localStorage.movies.split(',') : []
+      let stars = window.localStorage.movies ? window.localStorage.movies.split(',').map( element => {
+        return {
+          id: element.split(':')[0],
+          stars: element.split(':')[1]
+        }
+      }) : []
+
       let streamingServices = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
+
+      moviesID = await axios.post('http://localhost:8080/movies', {
+        stars: stars,
+        streamingServices: streamingServices
+      })
+      if(moviesID.length == 0){
+        //do a get request to the API
+        axios.get(
+          `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457
+          &language=${selectedLanguage}
+          &region=${selectedRegion}`
+        ).then(result => this.movies = result.data.results)
+        return 0;
+      }
+        
       let selectedRegion = window.localStorage.region ? window.localStorage.region : "";
       let selectedLanguage = window.localStorage.language ? window.localStorage.language : "";
-      
-      console.log([{genre:this.genre}, {type: this.type}, {name: this.name}, {date: this.date},{favorites:favorites},
-       {streamingServices: streamingServices}, {selectedRegion: selectedRegion}, {selectedLanguage: selectedLanguage} ] )
+
+      //now search the movies on imdb by id and adds it to the movies
+      moviesID.map(movieID =>{
+        axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457
+        &language=${selectedLanguage}
+        &region=${selectedRegion}
+        &query=${movieID}
+        `
+        ).then(result => this.movies.push(result.data))
+      })
     }
   },
   beforeMount(){
