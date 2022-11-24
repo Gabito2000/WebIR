@@ -6,7 +6,7 @@
             <li>Películas</li>
           </RouterLink>
           <RouterLink to="/userlist" active-class="nav-active">
-            <li>Favoritos</li>
+            <li>Valorados</li>
           </RouterLink>
           <RouterLink to="/config" active-class="nav-active">
             <li> 

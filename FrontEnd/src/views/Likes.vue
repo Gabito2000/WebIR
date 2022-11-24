@@ -1,13 +1,13 @@
 <template lang="">
   <div class="user-list-page">
     <Header />
-    <h2>Tus Favoritos</h2>
+    <h2>Tus Valorados</h2>
     <div className="result">
       <div v-if="movies.length > 0" class="cardMovie" v-for="movie in movies" :key="movie.id"> 
        <Card :movie="movie" :add="false" :setDataFromChild="setDataFromChild"/>
       </div>
       <div v-else>
-        <h2>No tiene favoritos !</h2>
+        <h2>No tiene valorados!</h2>
       </div>
     </div>
   </div>
