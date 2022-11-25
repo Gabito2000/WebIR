@@ -14,9 +14,9 @@ def distance_similarity_score(user1, user2):
         return 0
 
     distance = []
-    for element in ratings.loc[ratings.idUsuario == user1, 'idPelicula'].tolist():
+    for element in user1:
         if element in ratings.loc[ratings.idUsuario == user2, 'idPelicula'].tolist():
-            rating1 = get_rating_(user1, element)
+            rating1 = user1[1]
             rating2 = get_rating_(user2, element)
             distance.append(pow(rating1 - rating2, 2))
     total_distance = sum(distance)
@@ -37,16 +37,14 @@ def pearson_correlation_score(user1, user2):
     if len(both_watch_count) == 0:
         return 0
 
-    rating_sum_1 = sum([get_rating_(user1, element)
-                       for element in both_watch_count])
+    rating_sum_1 = sum([element[1] for element in user1 if element[0] in both_watch_count])
     rating_sum_2 = sum([get_rating_(user2, element)
                        for element in both_watch_count])
     rating_squared_sum_1 = sum(
-        [pow(get_rating_(user1, element), 2) for element in both_watch_count])
+        [pow(element[1]) for element in user1 if element[0] in both_watch_count])
     rating_squared_sum_2 = sum(
         [pow(get_rating_(user2, element), 2) for element in both_watch_count])
-    product_sum_rating = sum([get_rating_(
-        user1, element) * get_rating_(user2, element) for element in both_watch_count])
+    product_sum_rating = sum([element[1] * get_rating_(user2, element[0]) for element in user1 if element[0] in both_watch_count])
 
     numerator = product_sum_rating - \
         ((rating_sum_1 * rating_sum_2) / len(both_watch_count))
@@ -84,21 +82,12 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     return similar_users
 
 
-similar = most_similar_users_(1, 10)
-# print(similar)
-users = []
-
-for user in similar:
-    users.append(user)
-
-user1_streaming_services = ['2']
-
-
-def recommend_movies(user, users, streaming_services, max):
-    viewedMoviesUser = get_movieids_(user)
+def recommend_movies(user, streaming_services, max):
+    similar = most_similar_users_(user, 10)
+    viewedMoviesUser = [element[0] for element in user]
     notViewedMovies = {}
     notViewedWeight = []
-    for u in users:
+    for u in similar:
         movies = get_movieids_(u[1])
         for m in movies:
             if m not in viewedMoviesUser and any(item in get_movie_distributors_(get_movie_title_(m)) for item in streaming_services):
@@ -117,6 +106,3 @@ def recommend_movies(user, users, streaming_services, max):
     for (m, r) in sortedMovies[:max]:
         returnTitles.append(get_movie_title_(m))
     return returnTitles
-
-
-print(recommend_movies(1, users, user1_streaming_services, 10))
