@@ -8,14 +8,14 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+
     "@coreui/icons": "^2.1.0",
     "@coreui/icons-vue": "^2.0.0",
     "@coreui/vue": "^4.4.0",
     "axios": "^0.27.2",
-    "bootstrap": "^5.2.2",
-    "bootstrap-vue": "^2.22.0",
     "pinia": "^2.0.14",
     "sass": "^1.52.3",
+    "vue": "^3.2.37",
     "vue-router": "^4.0.16"
   },
   "devDependencies": {

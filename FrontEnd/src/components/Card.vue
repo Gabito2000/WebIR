@@ -8,7 +8,7 @@
     <h5 v-if="movie.release_date">{{dateFormat(movie.release_date)}}</h5>
     <h5 v-else >Fecha no encontrada</h5>
 
-    <h4>{{movie.vote_average}}/10<span>&#127775;</span></h4>
+    <Rating :grade="this.stars" :onChange="onRankingChange" :keY="stars"></Rating>
 
     <ul v-if="movie.genre_ids">
       <li v-for="movieGenre in genresMovies(movie.genre_ids)">
@@ -23,31 +23,31 @@
 
     <h3 v-if="movie.overview">Synopsis</h3>
     <p>{{movie.overview}}</p>
-
-    <CButton v-if="!isFavorite" class="btn-normal" @Click="changeStorage(movie)" >Añadir a favoritos</CButton>
-    <CButton v-if="isFavorite" class="btn-success" @Click="changeStorage(movie)" >Quitar de favoritos</CButton>
 </template>
 
 <script>
 import poster from '/img/poster.jpg'
 import { CButton } from '@coreui/vue';
+import  Rating  from  './Rating.vue';
 export default {
   data(){
     return {
       poster: poster, 
-      isFavorite: false
     }
   },
   components: {
-    CButton
+    CButton,
+    Rating
   },
   props: {
     movie: Object,
     genres: Object,
     add: Boolean,
-    setDataFromChild:Function
+    setDataFromChild:Function,
+    
   },
   methods: {
+    
     dateFormat(date) {
       let [yy, mm, dd] = date.split('-')
       return [dd, mm, yy].join('/');
@@ -63,20 +63,36 @@ export default {
       }
       return genresArray;
     },
-    changeStorage(movie) {
-      let storeData = window.localStorage.movies ? window.localStorage.movies.split(',') : [];
-      if (storeData.includes(movie.id.toString())) {
-        storeData = storeData.filter(id => id !== movie.id.toString());
-      } else {
-        storeData.push(movie.id.toString());
-      }
-      window.localStorage.movies = storeData;
-      this.isFavorite = !this.isFavorite;
+    onRankingChange(ranking){
+      return this.changeStorage( this.movie, ranking )
+    },
+    changeStorage(movie, ranking) {
+      let storeData = window.localStorage.movies ? window.localStorage.movies.split(',').map(element => {
+        let [id, ranking] = element.split(':');
+        return {id, ranking};
+      }) : [];
+     
+      storeData = storeData.filter(element => element.id !== movie.id.toString());
+      if(ranking != 0)
+        storeData.push({id: movie.id, ranking});
+      window.localStorage.movies = storeData.map(item => `${item.id}:${item.ranking}`).join(',');
+    },
+  },
+  computed:{
+    stars(){
+      let storeData = window.localStorage.movies ? window.localStorage.movies.split(',').map(element => {
+        let [id, ranking] = element.split(':');
+        return {id, ranking};
+      }) : [];
+      let movie = storeData.find(element => element.id === this.movie.id.toString());
+      return movie ? movie.ranking : 0;
     }
   },
   mounted() {
-    let storeData = window.localStorage.movies ? window.localStorage.movies.split(',') : [];
-    this.isFavorite = storeData.includes(this.movie.id.toString());
+    let storeData = window.localStorage.movies ? window.localStorage.movies.split(',').map(element => {
+      let [id, ranking] = element.split(':');
+      return {id, ranking};
+    }) : [];
   }
 }
 </script>

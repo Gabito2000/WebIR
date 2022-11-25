@@ -6,40 +6,13 @@
     <!--The buttons should be separated in a row-->
     <div class="streaming-services-list">
       <div class="streaming-service">
-        <CButton :class="calculateClass('Netflix')" @click="saveStreamingServiceOnLocalStorage('Netflix')"><CIcon  name="cib-netflix"/></CButton>  
+        <CButton :class="calculateClass('Netflix')" @click="saveStreamingServiceOnLocalStorage('Netflix')">Netflix</CButton>  
       </div>
       <div class="streaming-service">
         <CButton :class="calculateClass('HBO Max')" @click="saveStreamingServiceOnLocalStorage('HBO Max')">HBO Max</CButton>
       </div>
       <div class="streaming-service">
-        <CButton :class="calculateClass('Disney Plus')" @click="saveStreamingServiceOnLocalStorage('Disney Plus')">Disney Plus</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Amazon Prime')" @click="saveStreamingServiceOnLocalStorage('Amazon Prime')"><CIcon  name="cib-amazon"/></CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Apple TV Plus')" @click="saveStreamingServiceOnLocalStorage('Apple TV Plus')">Apple TV Plus</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Hulu')" @click="saveStreamingServiceOnLocalStorage('Hulu')">Hulu</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Crunchyroll')" @click="saveStreamingServiceOnLocalStorage('Crunchyroll')"><CIcon  name="cib-crunchyroll"/></CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Peacock')" @click="saveStreamingServiceOnLocalStorage('Peacock')">Peacock</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Paramount Plus')" @click="saveStreamingServiceOnLocalStorage('Paramount Plus')">Paramount Plus</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Starz')" @click="saveStreamingServiceOnLocalStorage('Starz')">Starz</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Showtime')" @click="saveStreamingServiceOnLocalStorage('Showtime')">Showtime</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Youtube Premium')" @click="saveStreamingServiceOnLocalStorage('Youtube Premium')"><CIcon  name="cib-youtube"/></CButton>
+        <CButton :class="calculateClass('Amazon Prime')" @click="saveStreamingServiceOnLocalStorage('Amazon Prime')">Amazon Prime</CButton>
       </div>
     </div>
     <!--
