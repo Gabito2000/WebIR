@@ -29,7 +29,7 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
     #api post to imdb api to get the movies timeout 20 seconds
     movies = []
     for movieName in recommend:
-        querry = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query="'+movieName+'"&language='+selectedRegion+'X&page=1&include_adult=false'
+        querry = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query="'+movieName+'"'
         response = requests.get(querry, timeout=20)
         if(response.status_code == 200):
             print(response.json())
