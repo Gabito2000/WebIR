@@ -2,19 +2,6 @@
   <div class="user-list-page">
     <Header />
     <h2>Tus Configuraciones</h2>
-    <!-- a series of buttons that save on the local storage if it has a netflix hbomax or an other streaming services with core ui icon if it can-->
-    <!--The buttons should be separated in a row-->
-    <div class="streaming-services-list">
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Netflix')" @click="saveStreamingServiceOnLocalStorage('Netflix')">Netflix</CButton>  
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('HBO Max')" @click="saveStreamingServiceOnLocalStorage('HBO Max')">HBO Max</CButton>
-      </div>
-      <div class="streaming-service">
-        <CButton :class="calculateClass('Amazon Prime')" @click="saveStreamingServiceOnLocalStorage('Amazon Prime')">Amazon Prime</CButton>
-      </div>
-    </div>
     <!--
       CFormSelect the region of the user when change save it on the local storage
     -->
@@ -78,33 +65,6 @@ export default {
   methods: {
     reRender() {
       this.$forceUpdate();
-    },
-    saveStreamingServiceOnLocalStorage(streamingService){
-      
-      /*saves or removes from the local storage the streaming service */
-      let storeData = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
-      if (!storeData.includes(streamingService)) {
-        storeData.push(streamingService)
-        window.localStorage.streamingServices = storeData
-        this.streamingServices = storeData;
-      }else{
-        let indexMovie = storeData.indexOf(streamingService);
-        if(indexMovie != -1){
-          storeData.splice(indexMovie, 1);
-          window.localStorage.streamingServices = storeData;
-          this.streamingServices = storeData;
-        }
-      }
-      this.reRender();
-    },
-    calculateClass(streamingService){
-      /* calculates the style of a button if the streaming service is in the local storage */
-      let storeData = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
-      if (storeData.includes(streamingService)) {
-        return "btn-success"
-      }else{
-        return "btn-danger"
-      }
     },
     saveRegionOnLocalStorage(event){
       /* saves the region on the local storage */

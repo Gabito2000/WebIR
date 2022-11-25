@@ -35,6 +35,9 @@
             </div>
           </CCol>
       </CRow>
+      <CRow>
+        <StreamingServices></StreamingServices>
+      </CRow>
       <div class='btn-container'>
         <CRow class="row justify-content-md-center" style="margin-top: 10px;margin-bottom: 10px;" >
           <CCol sm="12" md="9">
@@ -63,8 +66,10 @@
 <script>
 import axios from 'axios';
 import Card from './Card.vue';
+import  StreamingServices  from './StremingServices.vue';
 
 import { CButton, CRow, CCol} from '@coreui/vue';
+
 
 export default {
   components: {
@@ -72,6 +77,7 @@ export default {
     CButton,
     CRow,
     CCol,
+    StreamingServices
   },
   data() {
     return {
@@ -96,10 +102,13 @@ export default {
       })
     },
     search(){
-      axios.get(
-        `https://api.themoviedb.org/3/genre/movie/list?api_key=f9a3efe8c813e81a40a9b661bde37457&language=es-ES`
-      ).then(result => this.genres = result.data.genres)
-      .catch(error => console.log(error));
+      //get the generes
+      if(this.genre == 0){
+        axios.get(
+          `https://api.themoviedb.org/3/genre/movie/list?api_key=f9a3efe8c813e81a40a9b661bde37457&language=es-ES`
+        ).then(result => this.genres = result.data.genres)
+        .catch(error => console.log(error));
+      }
       // get elements form the store
       let stars = window.localStorage.movies ? window.localStorage.movies.split(',').map( element => {
         return {
@@ -111,29 +120,23 @@ export default {
       let streamingServices = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
       let selectedRegion = window.localStorage.region ? window.localStorage.region : "";
       let selectedLanguage = window.localStorage.language ? window.localStorage.language : "";
-
-      axios.post('http://localhost:8080/movies', {
-        stars: stars,
-        streamingServices: streamingServices
+      console.log(
+      {
+        movies: stars,
+        distribuidores: streamingServices,
+      }
+      );
+      axios.post('http://localhost:8080/movies' , {
+        movies: stars,
+        distribuidores: streamingServices,
       }).then( response => {
-          this.movies = response.data;
-          //now search the movies on imdb by id and adds it to the movies
-          moviesID.map(movieID =>{
-            axios.get(
-            `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457
-            &language=${selectedLanguage}
-            &region=${selectedRegion}
-            &query=${movieID}
-            `
-            ).then(result => this.movies.push(result.data)).catch(error => console.log(error))
+          this.movies = [];
+          response.data.forEach( movie => {
+            this.movies.push(movie)
           })
-        }).catch(error => {
-          //si falla trae todos los movies
-          console.log({error:error});
-          axios.get(
-            `https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query=marvel&language=es-ES&include_adult=true`
-          ).then(result => this.movies = result.data.results );
-        })
+      }).catch(error => {
+        console.log(error)
+      })
       
     }
   },
