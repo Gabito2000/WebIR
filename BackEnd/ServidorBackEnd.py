@@ -1,16 +1,15 @@
 # backend that gets a list of movies objects as a post request and returns a list of movies objects as a response fastapi
 import os
 import sys
-sys.path.append('../GeneradorDeEstructuras')
+sys.path.append('/Users/tali/Desktop/WebIR/GeneradorDeEstructuras')
 from fastapi import FastAPI
 from typing import List, Union
 from pydantic import BaseModel
 import requests
 
-from pruebaUsandoEstructuras import recommend_movies
+from pruebaUsandoEstructuras import *
 
 app = FastAPI()
- 
 
 class Movie(BaseModel):
     id: int
@@ -19,6 +18,16 @@ class Movie(BaseModel):
 
 @app.post("/movies")
 async def create_movie(movies: List[Movie], distribuidores: List[str]):
+    if len(movies) < 10:
+        movies = []
+        ret = random_titles(50)
+        for m in ret:
+            querry = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query="'+m+'"'
+        response = requests.get(querry, timeout=20)
+        if(response.status_code == 200):
+            print(response.json())
+            movies.append(response.json())
+        return movies    
     user = []
     distributors = []
     for movie in movies:
@@ -35,6 +44,3 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
             print(response.json())
             movies.append(response.json())
     return movies
-    
-
-

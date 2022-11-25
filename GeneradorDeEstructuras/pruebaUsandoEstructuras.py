@@ -1,6 +1,29 @@
 from math import pow, sqrt
-from IndiceInvertidoPeliculasUsuarios import *
+import sqlite3
+import pandas as pd
+import random
 
+conn = sqlite3.connect(
+    '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
+movies = pd.read_sql_query("SELECT * from Peliculas", conn)
+distributors = pd.read_sql_query("SELECT * from PeliculasDistibuidores", conn)
+
+
+def get_rating_(userid, movieid):
+    return (ratings.loc[(ratings.idUsuario == userid) & (ratings.idPelicula == movieid), 'calification'].iloc[0])
+
+
+def get_movieids_(userid):
+    return (ratings.loc[(ratings.idUsuario == userid), 'idPelicula'].tolist())
+
+
+def get_movie_title_(movieid):
+    return (movies.loc[(movies.id == movieid), 'title'].iloc[0])
+
+
+def get_movie_distributors_(movieid):
+    return (distributors.loc[(distributors.title == movieid), 'distributors'].tolist()[0].split(','))
 
 def distance_similarity_score(user1, user2):
     '''
@@ -106,3 +129,6 @@ def recommend_movies(user, streaming_services, max):
     for (m, r) in sortedMovies[:max]:
         returnTitles.append(get_movie_title_(m))
     return returnTitles
+
+def random_titles(max):
+    return random.choices(movies["title"], k=max)
