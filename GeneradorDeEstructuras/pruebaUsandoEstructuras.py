@@ -7,7 +7,7 @@ def distance_similarity_score(user1, user2):
     user1 & user2 : user ids of two users between which similarity        score is to be calculated.
     '''
     both_watch_count = 0
-    for element in ratings.loc[ratings.idUsuario == user1, 'idPelicula'].tolist():
+    for element in user1:
         if element in ratings.loc[ratings.idUsuario == user2, 'idPelicula'].tolist():
             both_watch_count += 1
     if both_watch_count == 0:
@@ -30,7 +30,7 @@ def pearson_correlation_score(user1, user2):
     '''
     both_watch_count = []
 
-    for element in ratings.loc[ratings.idUsuario == user1, 'idPelicula'].tolist():
+    for element in user1:
         if element in ratings.loc[ratings.idUsuario == user2, 'idPelicula'].tolist():
             both_watch_count.append(element)
 
@@ -75,14 +75,20 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
 
     similarity_score.sort()
     similarity_score.reverse()
+    similar_users = []
+    i = 0
+    while len(similar_users) < number_of_users or similarity_score[i][0] > 0.9 and i < len(similarity_score):
+        if similarity_score[i][0] != 1:
+            similar_users.append(similarity_score[i])
+        i = i+1
+    return similar_users
 
-    return similarity_score[:number_of_users]
 
-
-similar = most_similar_users_(1, 15)
+similar = most_similar_users_(1, 10)
+# print(similar)
 users = []
 
-for (similarity, user) in similar:
+for user in similar:
     users.append(user)
 
 user1_streaming_services = ['2']
@@ -90,14 +96,27 @@ user1_streaming_services = ['2']
 
 def recommend_movies(user, users, streaming_services, max):
     viewedMoviesUser = get_movieids_(user)
-    notViewedMovies = []
+    notViewedMovies = {}
+    notViewedWeight = []
     for u in users:
-        movies = get_movieids_(u)
+        movies = get_movieids_(u[1])
         for m in movies:
-            if m not in viewedMoviesUser and m not in notViewedMovies and any(item in get_movie_distributors_(get_movie_title_(m)) for item in streaming_services):
-                notViewedMovies.append(m)
-    notViewedMovies.sort()
-    return notViewedMovies[:max]
+            if m not in viewedMoviesUser and any(item in get_movie_distributors_(get_movie_title_(m)) for item in streaming_services):
+                if m not in notViewedMovies:
+                    notViewedMovies[m] = (get_rating_(u[1], m)*u[0], 1)
+                else:
+                    (r, c) = notViewedMovies[m]
+                    (auxr, auxc) = (r + get_rating_(u[1], m)*u[0], c+1)
+                    notViewedMovies[m] = (auxr, auxc)
+    for m in notViewedMovies:
+        (r, c) = notViewedMovies[m]
+        weight = round(r/c)
+        notViewedWeight.append((m, weight))
+    sortedMovies = sorted(notViewedWeight, key=lambda x: x[1], reverse=True)
+    returnTitles = []
+    for (m, r) in sortedMovies[:max]:
+        returnTitles.append(get_movie_title_(m))
+    return returnTitles
 
 
 print(recommend_movies(1, users, user1_streaming_services, 10))
