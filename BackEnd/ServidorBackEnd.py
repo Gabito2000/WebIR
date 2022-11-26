@@ -1,15 +1,31 @@
 # backend that gets a list of movies objects as a post request and returns a list of movies objects as a response fastapi
 import os
 import sys
-sys.path.append('/Users/tali/Desktop/WebIR/GeneradorDeEstructuras')
+sys.path.append('../GeneradorDeEstructuras')
 from fastapi import FastAPI
 from typing import List, Union
 from pydantic import BaseModel
 import requests
+import urllib.parse
 
-from pruebaUsandoEstructuras import *
+from pruebaUsandoEstructuras import recommend_movies
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+ 
 
 class Movie(BaseModel):
     id: int
@@ -18,16 +34,8 @@ class Movie(BaseModel):
 
 @app.post("/movies")
 async def create_movie(movies: List[Movie], distribuidores: List[str]):
-    if len(movies) < 10:
-        movies = []
-        ret = random_titles(50)
-        for m in ret:
-            querry = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query="'+m+'"'
-        response = requests.get(querry, timeout=20)
-        if(response.status_code == 200):
-            print(response.json())
-            movies.append(response.json())
-        return movies    
+    print(movies)
+    print(distribuidores)
     user = []
     distributors = []
     for movie in movies:
@@ -38,9 +46,14 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
     #api post to imdb api to get the movies timeout 20 seconds
     movies = []
     for movieName in recommend:
-        querry = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query="'+movieName+'"'
+        querry = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query='+movieName.replace(" ","%20")
         response = requests.get(querry, timeout=20)
         if(response.status_code == 200):
-            print(response.json())
             movies.append(response.json())
+            print(movieName)
+            print(movieName.replace(" ","%20"))
+            print(response.json())
     return movies
+    
+
+

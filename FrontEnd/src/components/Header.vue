@@ -15,7 +15,7 @@
           </RouterLink>
         </ul>
       </nav>
-      <h1>WebIR Proyecto</h1>
+      <h1>¿Qué Ver Hoy?</h1>
     </div>
 </template>
 <script>

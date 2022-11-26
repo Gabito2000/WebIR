@@ -1,13 +1,13 @@
 <template lang="">
     <div class="streaming-services-list">
         <div class="streaming-service">
-            <CButton :class="calculateClass('1')" @click="saveStreamingServiceOnLocalStorage('1')">Netflix</CButton>  
+            <CButton :class="calculateClass('2')" @click="saveStreamingServiceOnLocalStorage('2')">Netflix</CButton>  
         </div>
         <div class="streaming-service">
-            <CButton :class="calculateClass('2')" @click="saveStreamingServiceOnLocalStorage('2')">HBO Max</CButton>
+            <CButton :class="calculateClass('3')" @click="saveStreamingServiceOnLocalStorage('3')">HBO Max</CButton>
         </div>
         <div class="streaming-service">
-            <CButton :class="calculateClass('3')" @click="saveStreamingServiceOnLocalStorage('3')">Amazon Prime</CButton>
+            <CButton :class="calculateClass('1')" @click="saveStreamingServiceOnLocalStorage('1')">Amazon Prime</CButton>
         </div>
     </div>
 </template>

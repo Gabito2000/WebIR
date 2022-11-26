@@ -120,24 +120,25 @@ export default {
       let streamingServices = window.localStorage.streamingServices ? window.localStorage.streamingServices.split(',') : [];
       let selectedRegion = window.localStorage.region ? window.localStorage.region : "";
       let selectedLanguage = window.localStorage.language ? window.localStorage.language : "";
-      console.log(
-      {
+      
+      let post = {
         movies: stars,
         distribuidores: streamingServices,
-      }
-      );
-      axios.post('http://localhost:8080/movies' , {
-        movies: stars,
-        distribuidores: streamingServices,
-      }).then( response => {
+      };
+      axios.post('http://localhost:8080/movies' , 
+        post
+      ).then( response => {
           this.movies = [];
           response.data.forEach( movie => {
-            this.movies.push(movie)
+            if(movie.results && movie.results[0]){
+              this.movies.push(movie.results[0])
+              console.log(movie.results[0])
+              console.log(movie.results.length)
+            }
           })
       }).catch(error => {
         console.log(error)
       })
-      
     }
   },
   beforeMount(){

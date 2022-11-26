@@ -4,7 +4,7 @@ import pandas as pd
 import random
 
 conn = sqlite3.connect(
-    '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+    'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
 ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
 movies = pd.read_sql_query("SELECT * from Peliculas", conn)
 distributors = pd.read_sql_query("SELECT * from PeliculasDistibuidores", conn)
@@ -106,6 +106,8 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
 
 
 def recommend_movies(user, streaming_services, max):
+    if len(user) < 10:
+        return random_titles(max)
     similar = most_similar_users_(user, 10)
     viewedMoviesUser = [element[0] for element in user]
     notViewedMovies = {}
