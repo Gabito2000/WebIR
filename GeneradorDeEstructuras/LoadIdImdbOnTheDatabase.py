@@ -17,7 +17,9 @@ def get_id_imdb(title):
     url = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query=' + title.replace(" ","%20")
     response = requests.get(url)
     if response.status_code == 200:
-        return response.json()['imdbID']
+        if(len(response.json()['results']) > 0):
+            return response.json()['results'][0]['id']
+        return None
     else:
         return None
 
@@ -26,7 +28,7 @@ def get_id_imdb_thread(title):
     id_imdb = get_id_imdb(title)
     if id_imdb is not None:
         movies.loc[movies.title == title, 'id_imdb'] = id_imdb
-        print(title + " " + id_imdb)
+        print(title + " " + str(id_imdb))
     else:
         print(title + " not found")
 
