@@ -14,7 +14,7 @@ from pruebaUsandoEstructuras import recommend_movies
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
+BDPath = 'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db'
 origins = [
     "http://localhost",
     "http://localhost:3000",
@@ -41,8 +41,7 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
 
     for movie in movies:
         #search in sqlite3 database for the movie with the id_imdb = movie.id
-        conn = sqlite3.connect(
-            'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+        conn = sqlite3.connect(BDPath)
         movies = pd.read_sql_query("SELECT * from Peliculas", conn)
         movie_bd = movies.loc[movies.id_imdb == movie.id]
         if len(movie_bd) > 0:
@@ -61,12 +60,29 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
         response = requests.get(querry, timeout=20)
         if(response.status_code == 200):
             movies.append(response.json())
+    def get_series(movieName):
+        querry = 'https://api.themoviedb.org/3/search/tv?api_key=f9a3efe8c813e81a40a9b661bde37457&query='+movieName.replace(" ","%20")
+        response = requests.get(querry, timeout=20)
+        if(response.status_code == 200):
+            movies.append(response.json())
+
+    conn = sqlite3.connect(BDPath)
+    titles = pd.read_sql_query("SELECT * from Titles", conn)
     threds = []
     for movieName in recommend:
-        t = threading.Thread(target=get_movies, args=(movieName,))
+        #get for the table titles if the movie is a movie or a serie
+        title = titles.loc[titles.field2 == movieName]
+        if len(title) > 0:
+            title = title.iloc[0]
+            if title.field4 == "MOVIE":
+                threds.append(threading.Thread(target=get_movies, args=(movieName,)))
+                print("movie "+ movieName)
+            else:
+                threds.append(threading.Thread(target=get_series, args=(movieName,)))
+                print("serie "+ movieName)
+    
+    for t in threds:
         t.start()
-        threds.append(t)
-
     for t in threds:
         t.join()
 
