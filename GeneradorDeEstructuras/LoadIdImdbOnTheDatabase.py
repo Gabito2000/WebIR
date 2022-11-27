@@ -10,7 +10,6 @@ import time
 conn = sqlite3.connect(
     'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
 movies = pd.read_sql_query("SELECT * from Peliculas", conn)
-movies = movies.drop(columns=['id'])
 movies = movies.drop_duplicates(subset=['title'])
 
 def get_id_imdb(title):
@@ -18,17 +17,17 @@ def get_id_imdb(title):
     response = requests.get(url)
     if response.status_code == 200:
         if(len(response.json()['results']) > 0):
-            return response.json()['results'][0]['id']
-        return None
+            return [response.json()['results'][0]['id'], response.json()['results'][0]['title']]
+        return [None, None]
     else:
-        return None
+        return [None, None]
 
 
 def get_id_imdb_thread(title):
-    id_imdb = get_id_imdb(title)
+    [id_imdb, title_imdb] = get_id_imdb(title)
     if id_imdb is not None:
         movies.loc[movies.title == title, 'id_imdb'] = id_imdb
-        print(title + " " + str(id_imdb))
+        print(title + " " + str(id_imdb) + " " + str(title_imdb))
     else:
         print(title + " not found")
 
