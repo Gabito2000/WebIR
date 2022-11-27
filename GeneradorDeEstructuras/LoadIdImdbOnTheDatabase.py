@@ -18,9 +18,14 @@ def get_id_imdb(title):
     if response.status_code == 200:
         if(len(response.json()['results']) > 0):
             return [response.json()['results'][0]['id'], response.json()['results'][0]['title']]
-        return [None, None]
-    else:
-        return [None, None]
+        else:
+            #serch if it is a serie
+            url = 'https://api.themoviedb.org/3/search/tv?api_key=f9a3efe8c813e81a40a9b661bde37457&query=' + title.replace(" ","%20")
+            response = requests.get(url)
+            if response.status_code == 200:
+                if(len(response.json()['results']) > 0):
+                    return [response.json()['results'][0]['id'], response.json()['results'][0]['name']]
+    return [None, None]
 
 
 def get_id_imdb_thread(title):
