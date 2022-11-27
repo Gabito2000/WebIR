@@ -59,7 +59,6 @@ def pearson_correlation_score(user1, user2):
 
     if len(both_watch_count) == 0:
         return 0
-
     rating_sum_1 = sum([element[1] for element in user1 if element[0] in both_watch_count])
     rating_sum_2 = sum([get_rating_(user2, element)
                        for element in both_watch_count])
@@ -86,7 +85,6 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     metric : metric to be used to calculate inter-user similarity score. ('pearson' or else)
     '''
     user_ids = ratings.idUsuario.unique().tolist()
-
     if (metric == 'pearson'):
         similarity_score = [(pearson_correlation_score(user1, nth_user), nth_user)
                             for nth_user in user_ids[:100] if nth_user != user1]
@@ -106,9 +104,11 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
 
 
 def recommend_movies(user, streaming_services, max):
-    if len(user) < 10:
+    if len(user) < 5:
         return random_titles(max)
     similar = most_similar_users_(user, 10)
+    if similar[0][0] == 0:
+        return random_titles(max)
     viewedMoviesUser = [element[0] for element in user]
     notViewedMovies = {}
     notViewedWeight = []
@@ -130,6 +130,7 @@ def recommend_movies(user, streaming_services, max):
     returnTitles = []
     for (m, r) in sortedMovies[:max]:
         returnTitles.append(get_movie_title_(m))
+    print("returnTitles", returnTitles)
     return returnTitles
 
 def random_titles(max):

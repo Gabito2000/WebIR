@@ -61,10 +61,6 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
         response = requests.get(querry, timeout=20)
         if(response.status_code == 200):
             movies.append(response.json())
-            print(movieName)
-            print(movieName.replace(" ","%20"))
-            print(response.json())
-
     threds = []
     for movieName in recommend:
         t = threading.Thread(target=get_movies, args=(movieName,))
