@@ -7,6 +7,8 @@ from typing import List, Union
 from pydantic import BaseModel
 import requests
 import threading
+import sqlite3
+import pandas as pd
 
 from pruebaUsandoEstructuras import recommend_movies
 from fastapi.middleware.cors import CORSMiddleware
@@ -34,12 +36,20 @@ class Movie(BaseModel):
 
 @app.post("/movies")
 async def create_movie(movies: List[Movie], distribuidores: List[str]):
-    print(movies)
-    print(distribuidores)
     user = []
     distributors = []
+
     for movie in movies:
-        user.append((movie.id, movie.stars))
+        #search in sqlite3 database for the movie with the id_imdb = movie.id
+        conn = sqlite3.connect(
+            'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+        movies = pd.read_sql_query("SELECT * from Peliculas", conn)
+        movie_bd = movies.loc[movies.id_imdb == movie.id]
+        if len(movie_bd) > 0:
+            movie_bd = movie_bd.iloc[0]
+            user.append((movie_bd.id, movie.stars))
+        else:
+            print("movie not found")
     for d in distribuidores:
         distributors.append(d)
     recommend = recommend_movies(user, distributors, 10)
@@ -65,6 +75,4 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
         t.join()
 
     return movies
-    
-
 
