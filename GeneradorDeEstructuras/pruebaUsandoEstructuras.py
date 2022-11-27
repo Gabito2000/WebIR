@@ -4,7 +4,7 @@ import pandas as pd
 import random
 
 conn = sqlite3.connect(
-    'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+    '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
 ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
 movies = pd.read_sql_query("SELECT * from Peliculas", conn)
 distributors = pd.read_sql_query("SELECT * from PeliculasDistibuidores", conn)
@@ -54,25 +54,21 @@ def pearson_correlation_score(user1, user2):
     both_watch_count = []
 
     for element in user1:
-        if element in ratings.loc[ratings.idUsuario == user2, 'idPelicula'].tolist():
-            both_watch_count.append(element)
-
+        if element[0] in ratings.loc[ratings.idUsuario == user2, 'idPelicula'].tolist():
+            both_watch_count.append(element[0])
+    
     if len(both_watch_count) == 0:
         return 0
     rating_sum_1 = sum([element[1] for element in user1 if element[0] in both_watch_count])
-    rating_sum_2 = sum([get_rating_(user2, element)
-                       for element in both_watch_count])
+    rating_sum_2 = sum([get_rating_(user2, element) for element in both_watch_count])
     rating_squared_sum_1 = sum(
-        [pow(element[1]) for element in user1 if element[0] in both_watch_count])
+        [pow(element[1], 2) for element in user1 if element[0] in both_watch_count])
     rating_squared_sum_2 = sum(
         [pow(get_rating_(user2, element), 2) for element in both_watch_count])
     product_sum_rating = sum([element[1] * get_rating_(user2, element[0]) for element in user1 if element[0] in both_watch_count])
-
-    numerator = product_sum_rating - \
-        ((rating_sum_1 * rating_sum_2) / len(both_watch_count))
-    denominator = sqrt((rating_squared_sum_1 - pow(rating_sum_1, 2) / len(both_watch_count))
-                       * (rating_squared_sum_2 - pow(rating_sum_2, 2) / len(both_watch_count)))
-
+    
+    numerator = product_sum_rating - ((rating_sum_1 * rating_sum_2) / len(both_watch_count))
+    denominator = sqrt((rating_squared_sum_1 - pow(rating_sum_1,2) / len(both_watch_count)) * (rating_squared_sum_2 - pow(rating_sum_2,2) / len(both_watch_count)))
     if denominator == 0:
         return 0
     return numerator/denominator
@@ -84,13 +80,14 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     number_of_users : number of most similar users you want to user1.
     metric : metric to be used to calculate inter-user similarity score. ('pearson' or else)
     '''
+    
     user_ids = ratings.idUsuario.unique().tolist()
     if (metric == 'pearson'):
         similarity_score = [(pearson_correlation_score(user1, nth_user), nth_user)
-                            for nth_user in user_ids[:100] if nth_user != user1]
+                            for nth_user in user_ids]
     else:
         similarity_score = [(distance_similarity_score(user1, nth_user), nth_user)
-                            for nth_user in user_ids[:100] if nth_user != user1]
+                            for nth_user in user_ids]
 
     similarity_score.sort()
     similarity_score.reverse()
@@ -100,13 +97,15 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
         if similarity_score[i][0] != 1:
             similar_users.append(similarity_score[i])
         i = i+1
-    return similar_users
 
+    return similar_users
 
 def recommend_movies(user, streaming_services, max):
     if len(user) < 5:
         return random_titles(max)
+    similar = []
     similar = most_similar_users_(user, 10)
+    print(similar)
     if similar[0][0] == 0:
         return random_titles(max)
     viewedMoviesUser = [element[0] for element in user]

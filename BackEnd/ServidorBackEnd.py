@@ -1,7 +1,7 @@
 # backend that gets a list of movies objects as a post request and returns a list of movies objects as a response fastapi
 import os
 import sys
-sys.path.append('../GeneradorDeEstructuras')
+sys.path.append('/Users/tali/Desktop/WebIR/GeneradorDeEstructuras')
 from fastapi import FastAPI
 from typing import List, Union
 from pydantic import BaseModel
@@ -31,7 +31,7 @@ app.add_middleware(
 
 class Movie(BaseModel):
     id: int
-    stars: int
+    stars: float
 
 
 @app.post("/movies")
