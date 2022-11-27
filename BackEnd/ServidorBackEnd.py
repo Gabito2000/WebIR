@@ -6,7 +6,6 @@ from fastapi import FastAPI
 from typing import List, Union
 from pydantic import BaseModel
 import requests
-import urllib.parse
 import threading
 
 from pruebaUsandoEstructuras import recommend_movies
@@ -64,7 +63,7 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
 
     for t in threds:
         t.join()
-        
+
     return movies
     
 
