@@ -7,6 +7,7 @@ from typing import List, Union
 from pydantic import BaseModel
 import requests
 import urllib.parse
+import threading
 
 from pruebaUsandoEstructuras import recommend_movies
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,7 +46,8 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
     recommend = recommend_movies(user, distributors, 10)
     #api post to imdb api to get the movies timeout 20 seconds
     movies = []
-    for movieName in recommend:
+    
+    def get_movies(movieName):
         querry = 'https://api.themoviedb.org/3/search/movie?api_key=f9a3efe8c813e81a40a9b661bde37457&query='+movieName.replace(" ","%20")
         response = requests.get(querry, timeout=20)
         if(response.status_code == 200):
@@ -53,6 +55,16 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
             print(movieName)
             print(movieName.replace(" ","%20"))
             print(response.json())
+
+    threds = []
+    for movieName in recommend:
+        t = threading.Thread(target=get_movies, args=(movieName,))
+        t.start()
+        threds.append(t)
+
+    for t in threds:
+        t.join()
+        
     return movies
     
 
