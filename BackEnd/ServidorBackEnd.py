@@ -14,7 +14,7 @@ from pruebaUsandoEstructuras import recommend_movies
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-BDPath = 'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db'
+BDPath = '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db'
 origins = [
     "http://localhost",
     "http://localhost:3000",
