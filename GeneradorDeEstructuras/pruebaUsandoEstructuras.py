@@ -8,19 +8,27 @@ conn = sqlite3.connect(
 ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
 movies = pd.read_sql_query("SELECT * from Peliculas", conn)
 distributors = pd.read_sql_query("SELECT * from PeliculasDistibuidores", conn)
+indiceInvertidoPelicualsUsuario = pd.read_sql_query("SELECT * from IndiceInvertidoPeliculasUsuarios", conn)
 
+def get_usuarios_from_pelicula(pelicula):
+    # c = conn.cursor()
+    # c.execute('SELECT * FROM IndiceInvertidoPeliculasUsuarios WHERE idPelicula = ?', (pelicula,))
+    # indiceInvertidoPeliculasUsuarios = c.fetchone()
+
+    indiceInvertidoPeliculasUsuarios = indiceInvertidoPelicualsUsuario.loc[indiceInvertidoPelicualsUsuario.idPelicula == pelicula, 'idUsuarios'].tolist()
+    if indiceInvertidoPeliculasUsuarios.__len__() == 0:
+        print("No hay usuarios que hayan visto esta pelicula "+ str(pelicula))
+        return []
+    return indiceInvertidoPeliculasUsuarios[0].split(',')
 
 def get_rating_(userid, movieid):
     return (ratings.loc[(ratings.idUsuario == userid) & (ratings.idPelicula == movieid), 'calification'].iloc[0])
 
-
 def get_movieids_(userid):
     return (ratings.loc[(ratings.idUsuario == userid), 'idPelicula'].tolist())
 
-
 def get_movie_title_(movieid):
     return (movies.loc[(movies.id == movieid), 'title'].iloc[0])
-
 
 def get_movie_distributors_(movieid):
     return (distributors.loc[(distributors.title == movieid), 'distributors'].tolist()[0].split(','))
@@ -81,7 +89,18 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     metric : metric to be used to calculate inter-user similarity score. ('pearson' or else)
     '''
     
-    user_ids = ratings.idUsuario.unique().tolist()
+    # user_ids = ratings.idUsuario.unique().tolist()
+
+    # get all users from the movies that user1 has watched
+    #set of users id
+    user_ids = set()
+    for elements in user1:
+        movie = elements[0]
+        #append if not repited
+        for user in get_usuarios_from_pelicula(movie):
+            user_ids.add(int(user))
+
+
     if (metric == 'pearson'):
         similarity_score = [(pearson_correlation_score(user1, nth_user), nth_user)
                             for nth_user in user_ids]

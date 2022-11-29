@@ -32,7 +32,6 @@ def get_id_imdb_thread(title):
     [id_imdb, title_imdb] = get_id_imdb(title)
     if id_imdb is not None:
         movies.loc[movies.title == title, 'id_imdb'] = id_imdb
-        print(title + " " + str(id_imdb) + " " + str(title_imdb))
     else:
         print(title + " not found")
 

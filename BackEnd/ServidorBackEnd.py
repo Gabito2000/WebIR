@@ -48,7 +48,7 @@ async def create_movie(movies: List[Movie], distribuidores: List[str]):
             movie_bd = movie_bd.iloc[0]
             user.append((movie_bd.id, movie.stars))
         else:
-            print("movie not found")
+            print("movie not found"+ str(movie.id))
     for d in distribuidores:
         distributors.append(d)
     recommend = recommend_movies(user, distributors, 10)
