@@ -1,7 +1,7 @@
 # backend that gets a list of movies objects as a post request and returns a list of movies objects as a response fastapi
 import os
 import sys
-sys.path.append('/Users/tali/Desktop/WebIR/GeneradorDeEstructuras')
+sys.path.append('C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras')
 from fastapi import FastAPI
 from typing import List, Union
 from pydantic import BaseModel
@@ -14,7 +14,7 @@ from pruebaUsandoEstructuras import recommend_movies
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-BDPath = '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db'
+BDPath = 'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db'
 origins = [
     "http://localhost",
     "http://localhost:3000",

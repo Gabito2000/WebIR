@@ -13,7 +13,7 @@ import sys
 import pandas as pd
 
 # connect to the database
-conn = sqlite3.connect('/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+conn = sqlite3.connect('C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
 c = conn.cursor()
 
 # get the usuarios peliculas

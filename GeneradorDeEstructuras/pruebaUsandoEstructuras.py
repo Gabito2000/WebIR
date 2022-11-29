@@ -5,7 +5,7 @@ import random
 import threading
 
 conn = sqlite3.connect(
-    '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+    'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
 ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
 movies = pd.read_sql_query("SELECT * from Peliculas", conn)
 distributors = pd.read_sql_query("SELECT * from PeliculasDistibuidores", conn)
@@ -120,14 +120,12 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     return similar_users
 
 def recommend_movies(user, streaming_services, max):
-    print("Recomendando peliculas para el usuario " + str(len(user)))
-    print("user: " + str(user))
     if len(user) < 5:
         return random_titles(20)
     similar = []
     similar = most_similar_users_(user, 10)
     print(similar)
-    if similar[0][0] == 0:
+    if similar == [] or similar[0][0] == 0:
         print("No hay usuarios similares")
         return random_titles(20)
     viewedMoviesUser = [element[0] for element in user]
@@ -136,7 +134,9 @@ def recommend_movies(user, streaming_services, max):
     def get_movies(u):
         movies = get_movieids_(u[1])
         for m in movies:
-            if m not in viewedMoviesUser and any(item in get_movie_distributors_(get_movie_title_(m)) for item in streaming_services):
+            movieTitle = get_movie_title_(m)
+            movieDistributors = get_movie_distributors_(movieTitle)
+            if m not in viewedMoviesUser and any(item in movieDistributors for item in streaming_services):
                 if m not in notViewedMovies:
                     notViewedMovies[m] = (get_rating_(u[1], m)*u[0], 1)
                 else:
