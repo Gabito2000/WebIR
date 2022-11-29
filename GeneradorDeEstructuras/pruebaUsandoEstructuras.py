@@ -2,6 +2,7 @@ from math import pow, sqrt
 import sqlite3
 import pandas as pd
 import random
+import threading
 
 conn = sqlite3.connect(
     'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
@@ -100,19 +101,18 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
         for user in get_usuarios_from_pelicula(movie):
             user_ids.add(int(user))
 
-
+    similarity_score = []
     if (metric == 'pearson'):
         similarity_score = [(pearson_correlation_score(user1, nth_user), nth_user)
                             for nth_user in user_ids]
     else:
         similarity_score = [(distance_similarity_score(user1, nth_user), nth_user)
                             for nth_user in user_ids]
-
     similarity_score.sort()
     similarity_score.reverse()
     similar_users = []
     i = 0
-    while len(similar_users) < number_of_users or similarity_score[i][0] > 0.9 and i < len(similarity_score):
+    while (len(similar_users) < number_of_users or similarity_score[i][0] > 0.9) and i < len(similarity_score):
         if similarity_score[i][0] != 1:
             similar_users.append(similarity_score[i])
         i = i+1
@@ -120,6 +120,8 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     return similar_users
 
 def recommend_movies(user, streaming_services, max):
+    print("Recomendando peliculas para el usuario " + str(len(user)))
+    print("user: " + str(user))
     if len(user) < 5:
         return random_titles(max)
     similar = []
@@ -131,7 +133,7 @@ def recommend_movies(user, streaming_services, max):
     viewedMoviesUser = [element[0] for element in user]
     notViewedMovies = {}
     notViewedWeight = []
-    for u in similar:
+    def get_movies(u):
         movies = get_movieids_(u[1])
         for m in movies:
             if m not in viewedMoviesUser and any(item in get_movie_distributors_(get_movie_title_(m)) for item in streaming_services):
@@ -141,6 +143,15 @@ def recommend_movies(user, streaming_services, max):
                     (r, c) = notViewedMovies[m]
                     (auxr, auxc) = (r + get_rating_(u[1], m)*u[0], c+1)
                     notViewedMovies[m] = (auxr, auxc)
+    threds = []
+    for u in similar:
+        threds.append(threading.Thread(target=get_movies, args=(u,)))
+    for t in threds:
+        t.start()
+    for t in threds:
+        t.join()
+    
+
     for m in notViewedMovies:
         (r, c) = notViewedMovies[m]
         weight = round(r/c)
@@ -150,4 +161,5 @@ def recommend_movies(user, streaming_services, max):
     return sortedMovies[:max]
 
 def random_titles(max):
-    return random.choices(movies["title"], k=max)
+    ran = random.choices(movies["id"], k=max)
+    return [(r, 0) for r in ran]
