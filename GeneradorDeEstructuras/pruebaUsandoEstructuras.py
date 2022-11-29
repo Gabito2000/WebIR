@@ -5,7 +5,7 @@ import random
 import threading
 
 conn = sqlite3.connect(
-    'C:/Users/gabri/Desktop/Faculta/WebIR/WebIR/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
+    '/Users/tali/Desktop/WebIR/GeneradorDeEstructuras/dataBase/Peliculas.db')
 ratings = pd.read_sql_query("SELECT * from UsuariosPeliculas", conn)
 movies = pd.read_sql_query("SELECT * from Peliculas", conn)
 distributors = pd.read_sql_query("SELECT * from PeliculasDistibuidores", conn)
@@ -123,13 +123,13 @@ def recommend_movies(user, streaming_services, max):
     print("Recomendando peliculas para el usuario " + str(len(user)))
     print("user: " + str(user))
     if len(user) < 5:
-        return random_titles(max)
+        return random_titles(20)
     similar = []
     similar = most_similar_users_(user, 10)
     print(similar)
     if similar[0][0] == 0:
         print("No hay usuarios similares")
-        return random_titles(max)
+        return random_titles(20)
     viewedMoviesUser = [element[0] for element in user]
     notViewedMovies = {}
     notViewedWeight = []
