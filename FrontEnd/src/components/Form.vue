@@ -128,13 +128,11 @@ export default {
       axios.post('http://localhost:8080/movies' , 
         post
       ).then( response => {
+          console.log(response);
           this.movies = [];
           response.data.forEach( movie => {
-            if(movie.results && movie.results[0]){
-              this.movies.push(movie.results[0])
-              console.log(movie.results[0])
-              console.log(movie.results.length)
-            }
+            this.movies.push(movie)
+            console.log(movie)
           })
       }).catch(error => {
         console.log(error)

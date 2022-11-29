@@ -146,11 +146,8 @@ def recommend_movies(user, streaming_services, max):
         weight = round(r/c)
         notViewedWeight.append((m, weight))
     sortedMovies = sorted(notViewedWeight, key=lambda x: x[1], reverse=True)
-    returnTitles = []
-    for (m, r) in sortedMovies[:max]:
-        returnTitles.append(get_movie_title_(m))
-    print("returnTitles", returnTitles)
-    return returnTitles
+    print("returnTitles", sortedMovies[:max])
+    return sortedMovies[:max]
 
 def random_titles(max):
     return random.choices(movies["title"], k=max)
