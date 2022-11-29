@@ -26,13 +26,17 @@ def get_rating_(userid, movieid):
     return (ratings.loc[(ratings.idUsuario == userid) & (ratings.idPelicula == movieid), 'calification'].iloc[0])
 
 def get_movieids_(userid):
-    return (ratings.loc[(ratings.idUsuario == userid), 'idPelicula'].tolist())
+    return ratings.loc[(ratings.idUsuario == userid), 'idPelicula'].tolist()
+
+def get_movieids_calification_(userid):
+    return ratings.loc[(ratings.idUsuario == userid), ['idPelicula','calification']]
+
 
 def get_movie_title_(movieid):
     return (movies.loc[(movies.id == movieid), 'title'].iloc[0])
 
 def get_movie_distributors_(movieid):
-    return (distributors.loc[(distributors.title == movieid), 'distributors'].tolist()[0].split(','))
+    return (distributors.loc[(distributors.id == movieid), 'distributors'].tolist()[0].split(','))
 
 def distance_similarity_score(user1, user2):
     '''
@@ -112,7 +116,7 @@ def most_similar_users_(user1, number_of_users, metric='pearson'):
     similarity_score.reverse()
     similar_users = []
     i = 0
-    while (len(similar_users) < number_of_users or similarity_score[i][0] > 0.9) and i < len(similarity_score):
+    while i < len(similarity_score) and (len(similar_users) < number_of_users or similarity_score[i][0] > 0.9):
         if similarity_score[i][0] != 1:
             similar_users.append(similarity_score[i])
         i = i+1
@@ -132,17 +136,18 @@ def recommend_movies(user, streaming_services, max):
     notViewedMovies = {}
     notViewedWeight = []
     def get_movies(u):
-        movies = get_movieids_(u[1])
+        ratingsBd = get_movieids_calification_(u[1])
+        movies = ratingsBd.idPelicula.tolist()
         for m in movies:
-            movieTitle = get_movie_title_(m)
-            movieDistributors = get_movie_distributors_(movieTitle)
-            if m not in viewedMoviesUser and any(item in movieDistributors for item in streaming_services):
-                if m not in notViewedMovies:
-                    notViewedMovies[m] = (get_rating_(u[1], m)*u[0], 1)
-                else:
-                    (r, c) = notViewedMovies[m]
-                    (auxr, auxc) = (r + get_rating_(u[1], m)*u[0], c+1)
-                    notViewedMovies[m] = (auxr, auxc)
+            if m not in viewedMoviesUser:
+                movieDistributors = get_movie_distributors_(m)
+                if (m in notViewedMovies or any(item in movieDistributors for item in streaming_services)):
+                    if m not in notViewedMovies:
+                        notViewedMovies[m] = (ratingsBd.loc[ratingsBd.idPelicula == m, 'calification'].iloc[0] * u[0], 1)
+                    else:
+                        (r, c) = notViewedMovies[m]
+                        (auxr, auxc) = (r + get_rating_(u[1], m)*u[0], c+1)
+                        notViewedMovies[m] = (auxr, auxc)
     threds = []
     for u in similar:
         threds.append(threading.Thread(target=get_movies, args=(u,)))

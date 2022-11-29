@@ -28,13 +28,13 @@ with open('../data/titles.csv', 'r', encoding="utf8") as f:
     for row in reader:
         # gets the existing distruvibutors
         c.execute(
-            "SELECT distributors FROM PeliculasDistibuidores WHERE title = ?", (row[1],))
+            "SELECT distributors FROM PeliculasDistibuidores WHERE title = ?", (row[0],))
         distributors = c.fetchone()
         # if the movie is not in the table
         if distributors is None:
             # insert the movie and the distributor
             c.execute(
-                "INSERT INTO PeliculasDistibuidores VALUES (?, ?)", (row[1], row[2]))
+                "INSERT INTO PeliculasDistibuidores VALUES (?, ?)", (row[0], row[2]))
 
         # if the movie is in the table
         else:
@@ -47,7 +47,7 @@ with open('../data/titles.csv', 'r', encoding="utf8") as f:
                 distributors = ','.join(distributorsAux)
                 # insert the movie and the distributor
                 c.execute(
-                    "UPDATE PeliculasDistibuidores SET distributors = ? WHERE title = ?", (distributors, row[1]))
+                    "UPDATE PeliculasDistibuidores SET distributors = ? WHERE title = ?", (distributors, row[0]))
         conn.commit()
 
 # close the connection
